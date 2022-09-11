@@ -1,0 +1,38 @@
+-------------------------------------------
+Adding krita to AUTOMATIC1111's SD-webui
+-------------------------------------------
+EXPECTATION:
+- Be able to run SD server with Gradio while having the krita plugin connectivity so that you don't have 
+  to run multiple/different backends when switching between Krita and Gradio interface.
+
+CAPABILITIES:
+1. Krita server
+- REST API driven features via Flask
+    -> text2img
+    -> img2img
+    -> extra
+        - face fixing
+            1. GFPGAN
+            2. CodeFormer
+        - upscaling
+            1. RealESRGAN
+
+2. Krita plugin
+
+
+APPROACH:
+- Split krita into separate repo and use as submodule in SD repo.
+- Stick to sddebz plugin approach but fix integration with current AUTOMATIC features. 
+    -> Make use of imperator-maximus approach to api.py and api.bat
+
+NEW IDEAS/FEATURES:
+- 
+
+KRITA-PLUGIN REPO:
+- files
+    -> server.py
+        - Same as webui.py but with Flask REST API
+    -> server.bat
+        - Same as webui.bat with abiility to accept input arguments and install additional requirements.
+    -> requirements.txt
+    -> Krita-plugin
