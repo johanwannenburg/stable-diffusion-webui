@@ -9,6 +9,7 @@ import tqdm
 
 import modules.artists
 from modules.paths import script_path, sd_path
+from modules.devices import get_optimal_device
 import modules.styles
 
 config_filename = "config.json"
@@ -35,6 +36,7 @@ parser.add_argument("--precision", type=str, help="evaluate at this precision", 
 parser.add_argument("--share", action='store_true', help="use share=True for gradio and make the UI accessible through their site (doesn't work for me but you might have better luck)")
 parser.add_argument("--esrgan-models-path", type=str, help="path to directory with ESRGAN models", default=os.path.join(script_path, 'ESRGAN'))
 parser.add_argument("--opt-split-attention", action='store_true', help="enable optimization that reduce vram usage by a lot for about 10%% decrease in performance")
+parser.add_argument("--opt-split-attention-v1", action='store_true', help="enable older version of --opt-split-attention optimization")
 parser.add_argument("--listen", action='store_true', help="launch gradio with 0.0.0.0 as server name, allowing to respond to network requests")
 parser.add_argument("--port", type=int, help="launch gradio with given server port, you need root/admin rights for ports < 1024, defaults to 7860 if available", default=None)
 parser.add_argument("--show-negative-prompt", action='store_true', help="does not do anything", default=False)
@@ -42,12 +44,8 @@ parser.add_argument("--ui-config-file", type=str, help="filename to use for ui c
 
 cmd_opts = parser.parse_args()
 
-if torch.has_cuda:
-    device = torch.device("cuda")
-elif torch.has_mps:
-    device = torch.device("mps")
-else:
-    device = torch.device("cpu")
+device = get_optimal_device()
+
 batch_cond_uncond = cmd_opts.always_batch_cond_uncond or not (cmd_opts.lowvram or cmd_opts.medvram)
 parallel_processing_allowed = not cmd_opts.lowvram and not cmd_opts.medvram
 
